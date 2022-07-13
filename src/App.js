@@ -1,37 +1,41 @@
-import {Students} from "./components/Students"
-import './App.css';
-import {useState} from "react"
+import {useState} from "react";
+import "./App.css"
+import InfiniteScroll from "react-infinite-scroll-component";
 
-function App() {
-  var studentsPerPage = 25; 
-  
-  const [students, setStudents] = useState([...Array(studentsPerPage).keys()]); 
-  
-  var studentsNumber = studentsPerPage; 
-  console.log(students)
-  function handleScroll() { 
-    
-   
-    console.log(document.documentElement.scrollHeight,document.documentElement.scrollTop,document.documentElement.clientHeight);
-    if (document.documentElement.scrollHeight - document.documentElement.scrollTop == document.documentElement.clientHeight) { 
-      studentsNumber += studentsPerPage; 
-      console.log(studentsNumber);
-      setStudents([...Array(studentsNumber).keys()]);
-      
-    } 
-    
-  } 
-  console.log(studentsNumber, studentsPerPage);
-   window.addEventListener("scroll", handleScroll);
-  return (
-    <div className="App">
-          
-          {students.map((item, i) => ( 
-        <Students title={"Masai Students" + (i + 1)}/> 
-      ))} 
-      
-    </div>
-  );
-}
+const style = {
+  height: 30,
+  margin: 6,
+  padding: 8,
+  textAlign: "center"
+};
+
+const App=()=>{
+  const [state,setState] =useState({
+    items: Array.from({ length: 20 })
+  });
+
+  const fetchMoreData = () => {
+      setState({
+        items: state.items.concat(Array.from({ length: 25 }))
+      });
+  };
+
+
+    return (
+      <div className="App">
+        <InfiniteScroll
+          dataLength={state.items.length}
+          next={fetchMoreData}
+          hasMore={true}
+          loader={<h4>Loading...</h4>}
+        >
+          {state.items.map((i, index) => (
+            <h1 style={style} key={index}>Masai Students{" "}{index+1}</h1>
+          ))}
+        </InfiniteScroll>
+      </div>
+    );
+  }
+
 
 export default App;
